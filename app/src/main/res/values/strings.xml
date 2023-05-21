@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="history_title">history</string>
+    <string name="button_up">up</string>
+    <string name="bagikan">Bagikan</string>
+    <string name="bagikan_template">hasil : %1$s</string>
 </resources>

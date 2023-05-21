@@ -1,17 +1,28 @@
 package com.codingformobile.calculator
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
 import org.mariuszgromada.math.mxparser.Expression
 import java.text.DecimalFormat
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+class CalculatorFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_main, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         button_clear.setOnClickListener {
             input.text = ""
@@ -73,25 +84,38 @@ class MainActivity : AppCompatActivity() {
         button_equals.setOnClickListener {
             showResult()
         }
+        shareButton.setOnClickListener{shareData()}
+
         history_button.setOnClickListener {
             val historyList = mutableListOf<String>()
-            // Tambahkan history perhitungan ke dalam historyList
+            // Add calculation history to historyList
 
-            val intent = Intent(this, HistoryActivity::class.java)
+            val intent = Intent(requireContext(), HistoryActivity::class.java)
             intent.putStringArrayListExtra("historyList", ArrayList(historyList))
             startActivity(intent)
         }
         history_button.setOnClickListener {
             val historyList = mutableListOf<String>()
-            // Tambahkan riwayat perhitungan ke dalam historyList
+            // Add calculation history to historyList
 
-            val intent = Intent(this, HistoryActivity::class.java)
+            val intent = Intent(requireContext(), HistoryActivity::class.java)
             intent.putStringArrayListExtra("historyList", ArrayList(historyList))
             startActivity(intent)
         }
+    }
+
+    private fun shareData() {
+
+        val message = getString(R.string.bagikan_template,
 
 
-
+        )
+        val shareIntent = Intent(Intent.ACTION_SEND)
+        shareIntent.setType("text/plain").putExtra(Intent.EXTRA_TEXT, message)
+        if (shareIntent.resolveActivity(
+                requireActivity().packageManager) != null) {
+            startActivity(shareIntent)
+        }
     }
 
     private fun addToInputText(buttonValue: String): String {
@@ -111,16 +135,16 @@ class MainActivity : AppCompatActivity() {
             if (result.isNaN()) {
                 // Show Error Message
                 output.text = "Error"
-                output.setTextColor(ContextCompat.getColor(this, R.color.red))
+                output.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             } else {
                 // Show Result
                 output.text = DecimalFormat("0.######").format(result).toString()
-                output.setTextColor(ContextCompat.getColor(this, R.color.green))
+                output.setTextColor(ContextCompat.getColor(requireContext(), R.color.green))
             }
         } catch (e: Exception) {
             // Show Error Message
             output.text = "Error"
-            output.setTextColor(ContextCompat.getColor(this, R.color.red))
+            output.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
         }
     }
 }
